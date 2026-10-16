@@ -58,9 +58,9 @@ export interface RegistroData {
 }
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  selector: 'app-registro',
+  templateUrl: './registro.page.html',
+  styleUrls: ['./registro.page.scss'],
   standalone: true,
   imports: [
     CommonModule,
@@ -82,7 +82,7 @@ export interface RegistroData {
     IonCardContent
   ],
 })
-export class HomePage {
+export class RegistroPage {
   public registroForm: FormGroup;
   public isSubmitting = signal<boolean>(false);
   public isDarkMode = signal<boolean>(false);

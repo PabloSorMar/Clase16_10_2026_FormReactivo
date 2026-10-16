@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HomePage } from './home.page';
+import { RegistroPage } from './registro.page';
 import { AlertController, ToastController } from '@ionic/angular';
 
-describe('HomePage - Formulario Reactivo y Validaciones', () => {
-  let component: HomePage;
-  let fixture: ComponentFixture<HomePage>;
+describe('RegistroPage - Formulario Reactivo y Validaciones', () => {
+  let component: RegistroPage;
+  let fixture: ComponentFixture<RegistroPage>;
   let mockToastController: any;
   let mockAlertController: any;
 
@@ -22,14 +22,14 @@ describe('HomePage - Formulario Reactivo y Validaciones', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [HomePage],
+      imports: [RegistroPage],
       providers: [
         { provide: ToastController, useValue: mockToastController },
         { provide: AlertController, useValue: mockAlertController }
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HomePage);
+    fixture = TestBed.createComponent(RegistroPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -221,6 +221,3 @@ describe('HomePage - Formulario Reactivo y Validaciones', () => {
     });
   });
 });
-
-
-
