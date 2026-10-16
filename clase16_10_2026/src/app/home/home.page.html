@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Registro de Usuario</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleDarkMode()" aria-label="Cambiar modo oscuro" title="Cambiar tema claro/oscuro">
+        <ion-icon slot="icon-only" [name]="isDarkMode() ? 'sunny-outline' : 'moon-outline'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
+    <ion-list lines="full">
+
+      <!-- Campo Nombre -->
+      <ion-item>
+        <ion-input label="Nombre completo" labelPlacement="floating" type="text" formControlName="nombre"
+          errorText="El nombre es obligatorio (min. 3 caracteres).">
+        </ion-input>
+      </ion-item>
+
+      <!-- Campo Email -->
+      <ion-item>
+        <ion-input label="Correo Electrónico" labelPlacement="floating" type="email" inputmode="email"
+          formControlName="email" errorText="Introduzca un email válido.">
+        </ion-input>
+      </ion-item>
+
+      <!-- Campo Contraseña -->
+      <ion-item>
+        <ion-input label="Contraseña" labelPlacement="floating" type="password" formControlName="password"
+          errorText="Mínimo 8 caracteres, letras y números.">
+        </ion-input>
+      </ion-item>
+
+      <!-- Campo Fecha de Nacimiento (No superior a hoy) -->
+      <ion-item>
+        <ion-input label="Fecha de Nacimiento" labelPlacement="stacked" type="date" [max]="maxDate"
+          formControlName="fechaNacimiento" errorText="La fecha de nacimiento no puede ser superior a hoy.">
+        </ion-input>
+      </ion-item>
+
+    </ion-list>
+
+    <div class="ion-padding-top">
+      <ion-button expand="block" type="submit" [disabled]="registroForm.invalid || isSubmitting()">
+        <span *ngIf="!isSubmitting()">Registrarse</span>
+        <ion-spinner name="crescent" *ngIf="isSubmitting()"></ion-spinner>
+      </ion-button>
+    </div>
+  </form>
+
+  <!-- Tarjeta con opción de descarga de PDF tras envío exitoso -->
+  <ion-card *ngIf="lastSubmittedData()" class="download-card">
+    <ion-card-header>
+      <ion-card-title class="download-card-title">
+        <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+        Registro Completado
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Nombre:</strong> {{ lastSubmittedData()?.nombre }}</p>
+      <p><strong>Email:</strong> {{ lastSubmittedData()?.email }}</p>
+      <p><strong>Fecha de Nacimiento:</strong> {{ lastSubmittedData()?.fechaNacimiento }}</p>
+      <p class="timestamp"><small>Enviado el {{ lastSubmittedData()?.fechaRegistro }}</small></p>
+
+      <ion-button expand="block" color="secondary" fill="outline" (click)="descargarPDF()">
+        <ion-icon slot="start" name="download-outline"></ion-icon>
+        Descargar comprobante en PDF
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
