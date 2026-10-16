@@ -219,5 +219,39 @@ describe('RegistroPage - Formulario Reactivo y Validaciones', () => {
 
       expect(() => component.descargarPDF()).not.toThrow();
     });
+
+    it('cifrarPassword debe hashear la contraseña en SHA-256 sin dejarla en texto plano', async () => {
+      const plainPassword = 'Password123';
+      const hash = await component.cifrarPassword(plainPassword);
+
+      expect(hash).not.toBe(plainPassword);
+      expect(hash.length).toBe(64); // Longitud estándar de SHA-256 en hex
+      expect(/^[0-9a-f]{64}$/.test(hash)).toBe(true);
+    });
+
+    it('onSubmit debe imprimir la contraseña cifrada y no la contraseña en texto plano en la consola', async () => {
+      const consoleSpy = vi.spyOn(console, 'log');
+      const plainPassword = 'Password123';
+
+      component.registroForm.setValue({
+        nombre: 'Pablo Soriano',
+        email: 'pablo@ejemplo.com',
+        password: plainPassword,
+        fechaNacimiento: '1998-10-20'
+      });
+
+      await component.onSubmit();
+
+      expect(consoleSpy).toHaveBeenCalled();
+      const callsWithPayload = consoleSpy.mock.calls.filter(call =>
+        typeof call[0] === 'string' && call[0].includes('Payload a enviar a la API REST')
+      );
+      expect(callsWithPayload.length).toBeGreaterThan(0);
+
+      const loggedPayload = callsWithPayload[0][1];
+      expect(loggedPayload.password).not.toBe(plainPassword);
+      expect(loggedPayload.password.length).toBe(64);
+    });
   });
 });
+

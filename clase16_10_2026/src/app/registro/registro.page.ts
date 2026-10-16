@@ -124,6 +124,15 @@ export class RegistroPage {
     document.documentElement.classList.toggle('ion-palette-dark', nuevoEstado);
   }
 
+  public async cifrarPassword(password: string): Promise<string> {
+    if (!password) return '';
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
   public async onSubmit(): Promise<void> {
     if (this.registroForm.invalid) {
       this.registroForm.markAllAsTouched(); // Fuerza la visualización de errores
@@ -134,6 +143,8 @@ export class RegistroPage {
 
     try {
       const rawValues = this.registroForm.value;
+      const passwordCifrada = await this.cifrarPassword(rawValues.password);
+
       const submittedData: RegistroData = {
         nombre: rawValues.nombre,
         email: rawValues.email,
@@ -141,7 +152,12 @@ export class RegistroPage {
         fechaRegistro: new Date().toLocaleString('es-ES')
       };
 
-      console.log('Payload a enviar a la API REST:', submittedData);
+      const payloadAPI = {
+        ...submittedData,
+        password: passwordCifrada // Contraseña cifrada en hash SHA-256, nunca en texto plano
+      };
+
+      console.log('Payload a enviar a la API REST (contraseña cifrada):', payloadAPI);
 
       // Simulación de llamada asíncrona a un backend HTTP
       await new Promise(resolve => setTimeout(resolve, 2000));
